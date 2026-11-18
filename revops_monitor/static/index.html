@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RevOps Monitor</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="brand"><span class="logo">R</span><div><h1>RevOps Monitor</h1><p>Cruscotto mensile per il CRO</p></div></div>
+  <nav id="tabs" hidden>
+    <button class="tab active" data-tab="cruscotto">Cruscotto</button>
+    <button class="tab" data-tab="canali">Canali e ruoli</button>
+    <button class="tab" data-tab="qualita">Qualità dati</button>
+    <button class="tab" data-tab="guida">Guida</button>
+  </nav>
+</header>
+
+<main>
+  <section id="carica" class="panel">
+    <h2>1. Carica l'export del CRM</h2>
+    <div id="drop" class="drop" tabindex="0">
+      <p><strong>Trascina qui il file Excel</strong> oppure <label class="link">scegli un file<input id="file" type="file" accept=".xlsx"></label></p>
+      <p class="muted">Il file resta sul tuo computer: viene letto solo dal programma in esecuzione in locale.</p>
+      <p id="nomefile" class="muted"></p>
+    </div>
+    <div class="params">
+      <label>Mese in esame<select id="mese"><option value="">Ultimo mese con firme</option></select></label>
+      <label>Data di controllo<input id="controllo" type="date"></label>
+      <label>Target mensile (€)<input id="target" type="number" min="0" step="1000"></label>
+      <label>Tasso di vittoria stimato<input id="tasso" type="number" min="0" max="1" step="0.01"></label>
+      <label class="check"><input id="correggi" type="checkbox"> Correggi giorno/mese invertiti</label>
+      <button id="vai" class="primary" disabled>Calcola</button>
+    </div>
+    <p id="errore" class="errore" role="alert" hidden></p>
+  </section>
+
+  <div id="risultati" hidden>
+    <section id="tab-cruscotto" class="tabpane">
+      <div class="cards" id="cards"></div>
+      <div class="panel">
+        <h2>Semaforo <span id="conteggio" class="muted"></span></h2>
+        <table id="semaforo"><thead><tr><th>Indicatore</th><th class="n">Valore</th><th class="n">Attenzione</th><th class="n">Allarme</th><th>Stato</th><th>Cosa guardare se non è verde</th></tr></thead><tbody></tbody></table>
+        <p class="muted small">Le soglie sono iniziali e vanno calibrate: si modificano in <code>revops_monitor/config.json</code>.</p>
+      </div>
+      <div class="grid2">
+        <div class="panel"><h3>Pacing: MRR firmato cumulato nel mese</h3><div class="chart"><canvas id="c-pacing"></canvas></div><p id="nota-cop" class="muted small"></p></div>
+        <div class="panel"><h3>New MRR firmato contro target</h3><div class="chart"><canvas id="c-mrr"></canvas></div></div>
+        <div class="panel"><h3>New MRR per € di costo sales</h3><div class="chart"><canvas id="c-eff"></canvas></div></div>
+        <div class="panel"><h3>Lead → Opportunity e vittorie (coorti)</h3><div class="chart"><canvas id="c-funnel"></canvas></div></div>
+      </div>
+    </section>
+
+    <section id="tab-canali" class="tabpane" hidden>
+      <div class="panel"><h3>Resa dei lead Meta per ruolo (ultimi 2 mesi completi)</h3>
+        <table id="ruoli"><thead><tr><th>Ruolo</th><th class="n">Lead Meta</th><th class="n">Opportunity</th><th class="n">% Opportunity</th><th>Segnale</th></tr></thead><tbody></tbody></table></div>
+      <div class="grid2">
+        <div class="panel"><h3>Lead Meta creati per ruolo</h3><div class="chart"><canvas id="c-ruoli"></canvas></div></div>
+        <div class="panel"><h3>Costo per lead (€)</h3><div class="chart"><canvas id="c-cpl"></canvas></div></div>
+        <div class="panel"><h3>Costo per Opportunity (€)</h3><div class="chart"><canvas id="c-cpo"></canvas></div></div>
+        <div class="panel"><h3>New MRR per gruppo di canale</h3><div class="chart"><canvas id="c-canali"></canvas></div></div>
+      </div>
+    </section>
+
+    <section id="tab-qualita" class="tabpane" hidden>
+      <div class="panel"><h3>Controlli sull'export</h3><p class="muted">Se un controllo si accende, leggi i numeri del cruscotto con cautela.</p>
+        <table id="qualita"><thead><tr><th>Controllo</th><th class="n">Valore</th><th>Come leggerlo</th></tr></thead><tbody></tbody></table></div>
+    </section>
+
+    <section id="tab-guida" class="tabpane" hidden>
+      <div class="panel prose">
+        <h3>Come si usa</h3>
+        <ol>
+          <li>Esporta dal CRM il file con i fogli <code>Sales Deals DB</code> e <code>Cost Data</code>.</li>
+          <li>Caricalo, scegli il mese e la data di controllo (per un mese chiuso: l'ultimo giorno del mese) e premi Calcola.</li>
+          <li>Leggi il semaforo: per ogni indicatore non verde c'è scritto cosa guardare.</li>
+        </ol>
+        <h3>Ritmo consigliato</h3>
+        <ul>
+          <li><strong>Ogni lunedì:</strong> pacing, copertura della pipeline e quota firmata negli ultimi 4 giorni. Sono i primi segnali di slittamento.</li>
+          <li><strong>A metà mese:</strong> resa dei lead per ruolo e costo per Opportunity su Meta e Google, per riassegnare lead e budget prima di fine mese.</li>
+          <li><strong>A inizio mese:</strong> New MRR contro target, MRR per € di costo sales e costo del team.</li>
+        </ul>
+        <h3>Da sapere</h3>
+        <ul>
+          <li>La copertura della pipeline usa lo stage attuale dei deal: ha senso solo su un export fatto alla data di controllo.</li>
+          <li>Le date dell'export possono avere giorno e mese invertiti; l'opzione di correzione applica la stessa regola dell'analisi. Se il CRM viene corretto alla fonte, disattivala.</li>
+          <li>Le coorti del mese precedente sono ancora in parte aperte: i tassi di vittoria crescono man mano che i deal si chiudono.</li>
+          <li>Le chiamate registrate sono un dato di registrazione, non una prova che il lavoro sia stato fatto o no.</li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</main>
+<script src="/static/chart.umd.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

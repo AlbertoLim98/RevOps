@@ -1,0 +1,32 @@
+{
+  "target_mensile": 200000,
+  "correggi_date": true,
+  "tasso_vittoria_stimato": 0.18,
+  "min_lead_meta_ruolo": 100,
+  "soglia_meta_opportunity_ruolo": 0.06,
+  "mappa_canali": {
+    "meta paid": "Meta paid",
+    "google paid": "Google paid",
+    "tiktok paid": "Altri paid",
+    "youtube paid": "Altri paid",
+    "linkedin paid": "Altri paid",
+    "outbound": "Outbound e outreach",
+    "outreach": "Outbound e outreach"
+  },
+  "soglie": {
+    "new_mrr_su_target":      {"etichetta": "New MRR firmato / target", "direzione": "alto", "attenzione": 1.00, "allarme": 0.85, "formato": "pct", "suggerimento": "Guardare pacing, copertura della pipeline e quota firmata a fine mese."},
+    "pacing":                 {"etichetta": "Pacing vs media ultimi 3 mesi (stesso giorno)", "direzione": "alto", "attenzione": 0.95, "allarme": 0.80, "formato": "pct", "suggerimento": "Firme in ritardo rispetto ai 3 mesi precedenti: guardare la copertura della pipeline."},
+    "ultimi_4_giorni":        {"etichetta": "% MRR firmato negli ultimi 4 giorni", "direzione": "basso", "attenzione": 0.40, "allarme": 0.50, "formato": "pct", "suggerimento": "Slittamento: firme concentrate a fine mese, rischio di scivolare nel mese dopo."},
+    "copertura_pipeline":     {"etichetta": "Copertura pipeline (attesa / gap residuo)", "direzione": "alto", "attenzione": 1.00, "allarme": 0.60, "formato": "pct", "suggerimento": "Poche opportunity aperte con closedate nel mese: servono nuove opportunity."},
+    "mrr_per_costo_sales":    {"etichetta": "New MRR per € di costo sales", "direzione": "alto", "attenzione": 0.50, "allarme": 0.35, "formato": "dec2", "suggerimento": "Efficienza del team: guardare la resa per ruolo."},
+    "lead_opportunity":       {"etichetta": "Lead → Opportunity (coorte mese precedente)", "direzione": "alto", "attenzione": 0.20, "allarme": 0.17, "formato": "pct1", "suggerimento": "Qualità dei lead: quota che arriva a Opportunity, per canale nella tabella dei ruoli."},
+    "vittorie_opportunity":   {"etichetta": "Vittorie su opportunity chiuse (coorte mese precedente)", "direzione": "alto", "attenzione": 0.22, "allarme": 0.18, "formato": "pct1", "suggerimento": "Qualità del lavoro sulle opportunity (la coorte non è ancora matura)."},
+    "meta_lead_opportunity":  {"etichetta": "Lead Meta → Opportunity (coorte mese precedente)", "direzione": "alto", "attenzione": 0.08, "allarme": 0.06, "formato": "pct1", "suggerimento": "Quali ruoli lavorano Meta e con quale resa: tabella per ruolo."},
+    "costo_opp_meta":         {"etichetta": "Costo per Opportunity Meta (€)", "direzione": "basso", "attenzione": 2700, "allarme": 3300, "formato": "eur", "suggerimento": "Se sale, ridurre o riassegnare il volume Meta."},
+    "costo_opp_google":       {"etichetta": "Costo per Opportunity Google (€)", "direzione": "basso", "attenzione": 1800, "allarme": 2200, "formato": "eur", "suggerimento": "Se sale mentre i lead calano, possibile saturazione."},
+    "ruoli_bassa_resa":       {"etichetta": "Ruoli con volume Meta e poche Opportunity (n.)", "direzione": "basso", "attenzione": 1, "allarme": 2, "formato": "int", "suggerimento": "Ruoli che ricevono molto Meta con poche Opportunity: rivedere l'assegnazione."},
+    "won_senza_bdr":          {"etichetta": "Won senza ruolo BDR (% sui Won del mese)", "direzione": "basso", "attenzione": 0.05, "allarme": 0.10, "formato": "pct1", "suggerimento": "Completare l'anagrafica dei ruoli nel CRM."},
+    "won_senza_mrr":          {"etichetta": "Won senza MRR (n.)", "direzione": "basso", "attenzione": 1, "allarme": 3, "formato": "int", "suggerimento": "Completare il campo MRR prima della chiusura del mese."},
+    "closedate_scadute":      {"etichetta": "Opportunity aperte con closedate già passata (%)", "direzione": "basso", "attenzione": 0.10, "allarme": 0.25, "formato": "pct1", "suggerimento": "Closedate non aggiornate: la copertura della pipeline è meno affidabile."}
+  }
+}
